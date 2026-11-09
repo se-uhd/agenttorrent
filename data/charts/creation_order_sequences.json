@@ -1,0 +1,35 @@
+{
+  "sequences": [
+    {
+      "label": "{AGENTS.md, CLAUDE.md}",
+      "count": 1290,
+      "color": "#a8a29e"
+    },
+    {
+      "label": "CLAUDE.md then AGENTS.md",
+      "count": 627,
+      "color": "#a8a29e"
+    },
+    {
+      "label": "AGENTS.md then CLAUDE.md",
+      "count": 507,
+      "color": "#a8a29e"
+    },
+    {
+      "label": "Copilot Instructions then AGENTS.md",
+      "count": 228,
+      "color": "#a8a29e"
+    },
+    {
+      "label": "Copilot Instructions then CLAUDE.md",
+      "count": 105,
+      "color": "#a8a29e"
+    },
+    {
+      "label": "Other",
+      "count": 1064,
+      "color": "#a8a29e"
+    }
+  ],
+  "n_repos": 3821
+}

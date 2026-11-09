@@ -1,0 +1,435 @@
+{
+  "categories": [
+    "AGENTS.md",
+    "Claude",
+    "Copilot",
+    "Cursor",
+    "Gemini",
+    "Codex",
+    "OpenCode"
+  ],
+  "category_colors": {
+    "Claude": "#87ceeb",
+    "Copilot": "#ef9a9a",
+    "Cursor": "#ffcc80",
+    "Gemini": "#fff176",
+    "Codex": "#90ee90",
+    "OpenCode": "#80cbc4",
+    "AGENTS.md": "#ce93d8"
+  },
+  "category_totals": {
+    "Claude": 6315,
+    "Copilot": 2399,
+    "Cursor": 783,
+    "Gemini": 506,
+    "Codex": 332,
+    "OpenCode": 200,
+    "AGENTS.md": 6910
+  },
+  "intersections": [
+    {
+      "members": [
+        "AGENTS.md"
+      ],
+      "size": 2720
+    },
+    {
+      "members": [
+        "Claude"
+      ],
+      "size": 2326
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude"
+      ],
+      "size": 2270
+    },
+    {
+      "members": [
+        "Copilot"
+      ],
+      "size": 880
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Copilot"
+      ],
+      "size": 487
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Copilot"
+      ],
+      "size": 387
+    },
+    {
+      "members": [
+        "Claude",
+        "Copilot"
+      ],
+      "size": 250
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Cursor"
+      ],
+      "size": 189
+    },
+    {
+      "members": [
+        "Cursor"
+      ],
+      "size": 127
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Gemini"
+      ],
+      "size": 113
+    },
+    {
+      "members": [
+        "Gemini"
+      ],
+      "size": 102
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Codex"
+      ],
+      "size": 87
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Cursor"
+      ],
+      "size": 77
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Copilot",
+        "Cursor"
+      ],
+      "size": 74
+    },
+    {
+      "members": [
+        "Claude",
+        "Cursor"
+      ],
+      "size": 73
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Copilot",
+        "Gemini"
+      ],
+      "size": 50
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Codex",
+        "Copilot"
+      ],
+      "size": 45
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Gemini"
+      ],
+      "size": 44
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "OpenCode"
+      ],
+      "size": 42
+    },
+    {
+      "members": [
+        "Claude",
+        "Gemini"
+      ],
+      "size": 35
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "OpenCode"
+      ],
+      "size": 31
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Copilot",
+        "Cursor",
+        "Gemini"
+      ],
+      "size": 30
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Codex"
+      ],
+      "size": 27
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Codex",
+        "Copilot",
+        "Cursor"
+      ],
+      "size": 24
+    },
+    {
+      "members": [
+        "OpenCode"
+      ],
+      "size": 23
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Codex",
+        "Cursor"
+      ],
+      "size": 23
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Cursor",
+        "Gemini"
+      ],
+      "size": 21
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Copilot",
+        "Cursor"
+      ],
+      "size": 19
+    },
+    {
+      "members": [
+        "Claude",
+        "Copilot",
+        "Cursor"
+      ],
+      "size": 17
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Cursor",
+        "OpenCode"
+      ],
+      "size": 17
+    },
+    {
+      "members": [
+        "Codex"
+      ],
+      "size": 14
+    },
+    {
+      "members": [
+        "Claude",
+        "Codex"
+      ],
+      "size": 13
+    },
+    {
+      "members": [
+        "Copilot",
+        "Cursor"
+      ],
+      "size": 13
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Copilot",
+        "OpenCode"
+      ],
+      "size": 11
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Codex",
+        "Gemini"
+      ],
+      "size": 11
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Codex",
+        "Copilot",
+        "Gemini"
+      ],
+      "size": 11
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Copilot",
+        "Gemini"
+      ],
+      "size": 10
+    },
+    {
+      "members": [
+        "Claude",
+        "Copilot",
+        "Gemini"
+      ],
+      "size": 9
+    },
+    {
+      "members": [
+        "Copilot",
+        "Gemini"
+      ],
+      "size": 9
+    },
+    {
+      "members": [
+        "Claude",
+        "Codex",
+        "Cursor"
+      ],
+      "size": 9
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Codex",
+        "Copilot",
+        "Cursor",
+        "Gemini"
+      ],
+      "size": 8
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Copilot",
+        "OpenCode"
+      ],
+      "size": 7
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Codex",
+        "Copilot"
+      ],
+      "size": 7
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Codex",
+        "Cursor",
+        "OpenCode"
+      ],
+      "size": 7
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Codex",
+        "OpenCode"
+      ],
+      "size": 7
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Codex",
+        "Copilot",
+        "Cursor",
+        "Gemini",
+        "OpenCode"
+      ],
+      "size": 6
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Copilot",
+        "Cursor",
+        "OpenCode"
+      ],
+      "size": 6
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Gemini",
+        "OpenCode"
+      ],
+      "size": 6
+    },
+    {
+      "members": [
+        "AGENTS.md",
+        "Claude",
+        "Copilot",
+        "Cursor",
+        "Gemini",
+        "OpenCode"
+      ],
+      "size": 5
+    },
+    {
+      "members": [
+        "Claude",
+        "Cursor",
+        "Gemini"
+      ],
+      "size": 5
+    }
+  ]
+}

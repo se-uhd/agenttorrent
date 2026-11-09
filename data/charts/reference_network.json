@@ -1,0 +1,136 @@
+{
+  "sources": [
+    "CLAUDE.md",
+    "AGENTS.md",
+    "GEMINI.md",
+    "Instructions",
+    ".cursorrules",
+    "Gemini Style Guide",
+    "Cursor BUGBOT",
+    "REVIEW.md",
+    "Named in Configuration"
+  ],
+  "targets": [
+    "CLAUDE.md",
+    "AGENTS.md",
+    "GEMINI.md",
+    "Instructions",
+    ".cursorrules",
+    "Gemini Style Guide",
+    "Cursor BUGBOT",
+    "REVIEW.md",
+    "Named in Configuration",
+    "Other"
+  ],
+  "matrix": [
+    [
+      35,
+      3476,
+      2,
+      26,
+      0,
+      0,
+      0,
+      0,
+      0,
+      227
+    ],
+    [
+      301,
+      120,
+      1,
+      26,
+      0,
+      0,
+      0,
+      0,
+      0,
+      352
+    ],
+    [
+      9,
+      126,
+      7,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      21
+    ],
+    [
+      19,
+      200,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      136
+    ],
+    [
+      1,
+      21,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4
+    ],
+    [
+      0,
+      2,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3
+    ],
+    [
+      0,
+      2,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "n_pairs": 5131
+}

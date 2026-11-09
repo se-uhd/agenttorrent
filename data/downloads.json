@@ -1,0 +1,104 @@
+[
+  {
+    "filename": "repos.csv.7z",
+    "description": "Main repository dataset (repos.csv) with GitHub metadata, classification, and the tool and mechanism flags",
+    "size": 8372864,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/repos.csv.7z"
+  },
+  {
+    "filename": "commits.csv.7z",
+    "description": "Commits that credit one of the six tools (commits.csv), in the repositories with detected configuration",
+    "size": 379826014,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/commits.csv.7z"
+  },
+  {
+    "filename": "other_commits.csv",
+    "description": "Commits attributed to tools outside the six studied tools",
+    "size": 101393212,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/other_commits.csv"
+  },
+  {
+    "filename": "repos_data.7z",
+    "description": "Configuration artifact files from all repositories",
+    "size": 265745611,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/repos_data.7z"
+  },
+  {
+    "filename": "context_files.csv",
+    "description": "Context files, such as CLAUDE.md and AGENTS.md",
+    "size": 9098594,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/context_files.csv"
+  },
+  {
+    "filename": "settings.csv",
+    "description": "Settings files",
+    "size": 1210603,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/settings.csv"
+  },
+  {
+    "filename": "skills.csv",
+    "description": "Skill definitions",
+    "size": 9679443,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/skills.csv"
+  },
+  {
+    "filename": "subagents.csv",
+    "description": "Subagent definitions",
+    "size": 1047175,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/subagents.csv"
+  },
+  {
+    "filename": "commands.csv",
+    "description": "Custom command files",
+    "size": 553388,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/commands.csv"
+  },
+  {
+    "filename": "hooks.csv",
+    "description": "Hook configurations",
+    "size": 203769,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/hooks.csv"
+  },
+  {
+    "filename": "rules.csv",
+    "description": "Rule files",
+    "size": 1310972,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/rules.csv"
+  },
+  {
+    "filename": "mcp.csv",
+    "description": "MCP configurations",
+    "size": 287701,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/mcp.csv"
+  },
+  {
+    "filename": "plugins.csv",
+    "description": "Plugin and extension manifests",
+    "size": 268785,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/plugins.csv"
+  },
+  {
+    "filename": "lsp.csv",
+    "description": "LSP server configurations",
+    "size": 5813,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/lsp.csv"
+  },
+  {
+    "filename": "planning-documents.csv",
+    "description": "Planning documents, such as the specs and plans of Spec Kit and OpenSpec, which are no configuration artifacts",
+    "size": 12657149,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/planning-documents.csv"
+  },
+  {
+    "filename": "imports.csv",
+    "description": "Imports of the configuration artifacts, such as @docs/style.md in a CLAUDE.md, with the file that each reaches",
+    "size": 3644541,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/imports.csv"
+  },
+  {
+    "filename": "imported_files.7z",
+    "description": "The imported files that repos_data.7z does not contain",
+    "size": 946298,
+    "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/imported_files.7z"
+  }
+]
