@@ -196,11 +196,11 @@
 
 <header id="top">
   <h1>AgentTorrent<a class="section-anchor" href="#top" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h1>
-  <p class="subtitle">A dataset of the version-controlled context of coding agents: the configuration artifacts of six tools, Claude Code, GitHub Copilot, OpenAI Codex, Cursor, Gemini and OpenCode, in GitHub repositories, the files that they import, the planning documents beside them, and the commits that credit the tools. Gemini includes Antigravity, which Google names the successor of Gemini CLI.</p>
+  <p class="subtitle">A dataset of the context and harness configuration of coding agents in engineered software projects on GitHub. It contains the configuration artifacts of six tools, the files that these configuration artifacts import, agentic planning documents, and the commits that credit the tools. The tools are Claude Code, GitHub Copilot, OpenAI Codex, Cursor, OpenCode and Gemini, which includes Antigravity, Google's successor to Gemini CLI.</p>
   <p class="paper-ref">To cite this dataset, cite its release on Zenodo:</p>
   <p class="paper-ref"><strong>AgentTorrent: A Dataset of Context and Harness Engineering Artifacts on GitHub.</strong><br>
   Sebastian Baltes, Seyedmoein Mohsenimofidi, Levi Böhme, Vahram Nersesyan, Muhammad Auwal Abubakar, Jai Lal Lulla, Matthias Galster, and Christoph Treude.<br>
-  Version 2.0.0, Zenodo, 2026.<br>
+  Zenodo, 2026.<br>
   [<a href="https://doi.org/10.5281/zenodo.24058026">DOI</a>]</p>
   <p class="paper-ref">An earlier version of the dataset is described in:</p>
   <p class="paper-ref"><strong>A Dataset of Agentic AI Coding Tool Configurations.</strong><br>
@@ -208,9 +208,7 @@
   <em>Proceedings of the 3rd ACM International Conference on AI-Powered Software (AIware '26)</em>, Montreal, Canada, 2026.<br>
   [<a href="https://doi.org/10.1145/3805760.3814922">DOI</a>] [<a href="https://assets.empirical-software.engineering/pdf/aiware26-ai-config-dataset.pdf">PDF</a>]</p>
   <div class="release-notes">
-    <p>Release 2.0.0 is the first release under the name AgentTorrent, formerly AgentContext and AgentConfigs, and a new collection from a complete run of the pipeline. Of the <!--s:collection.sample_repositories-->40,901<!--/s--> engineered software projects in the sample, <!--s:collection.configured_repositories-->10,944<!--/s--> are configured, <!--s:collection.commits.tools-->1,281,628<!--/s--> commits credit one of the six tools, and <!--s:collection.commits.other_tools-->72,527<!--/s--> credit one of <!--s:heuristics.other_ai_commit_patterns.tools-->154<!--/s--> other tools.</p>
-    <p>The release adds OpenCode as the sixth tool, plugins and LSP servers as mechanisms, the files that configuration artifacts import, the planning documents of spec-driven development frameworks, the commits of other tools, and for each commit how it credits a tool. Every heuristic cites the vendor documentation or the commits that it rests on, and the release reports its measured detection accuracy.</p>
-    <p>A configuration in a repository does not show that the tool is used, and a credit in a commit does not show who wrote the change. The README of the release defines every column and names the evidence limits, and the <a href="https://github.com/se-uhd/agenttorrent-pipeline/blob/main/CHANGELOG.md">changelog</a> lists every change.</p>
+    <p>Of the <!--s:collection.sample_repositories-->40,901<!--/s--> engineered software projects in the sample, <!--s:collection.configured_repositories-->10,944<!--/s--> contain a configuration artifact. In these projects, <!--s:collection.commits.tools-->1,281,628<!--/s--> commits credit one of the six tools and <!--s:collection.commits.other_tools-->72,527<!--/s--> credit one of <!--s:heuristics.other_ai_commit_patterns.tools-->154<!--/s--> other tools. Compared with the earlier version, the dataset adds OpenCode as the sixth tool, as well as plugins and LSP servers as mechanisms. It also adds the files that configuration artifacts import, the commits of other tools, the form in which each commit credits a tool, and agentic planning documents, which spec-driven development frameworks and the planning features of the tools write. Every heuristic cites the vendor documentation or the commits that it rests on. Still, a configuration artifact does not show that a tool is used, and a credit in a commit does not show who wrote the change. The README of the release defines every column, and the <a href="https://github.com/se-uhd/agenttorrent-pipeline/blob/main/CHANGELOG.md">changelog</a> lists every change.</p>
   </div>
 </header>
 
@@ -231,17 +229,17 @@
 
 <section id="visualizations">
   <h2>Visualizations<a class="section-anchor" href="#visualizations" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h2>
-  <p class="section-desc">Interactive visualizations of tool adoption and configuration patterns.</p>
+  <p class="section-desc">Interactive charts of which tools and mechanisms the repositories configure, how the tools co-occur, and when the repositories created their first configuration artifacts.</p>
 
   <div class="chart-row">
     <div class="chart-panel" id="chart-config-tool-heatmap">
       <h3>Configuration Mechanisms per Tool</h3>
-      <p class="chart-desc">Repositories with a configuration artifact of each mechanism attributed to each tool. A file that several tools read counts under each of them, and a shared file such as <code>AGENTS.md</code> counts under none. The last column counts the repositories with no specific tool, which have only shared configuration artifacts. Percentages are relative to the repository count per tool. Column totals can exceed the overall repository count because a repository can configure several tools.</p>
+      <p class="chart-desc">Repositories with a configuration artifact of each mechanism, by the tool to which the dataset attributes the file. A file attributed to several tools counts under each of them. A shared file such as <code>AGENTS.md</code> is attributed to no tool and counts in no tool column. The last column counts the repositories with no specific tool, which have only shared configuration artifacts. Percentages are relative to the repository count per tool. Column totals can exceed the overall repository count because a repository can configure several tools.</p>
       <div class="chart-container"></div>
     </div>
     <div class="chart-panel" id="chart-language-tool-heatmap">
       <h3>Tool Usage by Programming Language</h3>
-      <p class="chart-desc">Adoption of agentic tools per programming language. No specific tool denotes the repositories with only shared configuration artifacts, such as <code>AGENTS.md</code>, <code>.agents/skills</code> or a root <code>.mcp.json</code>. Percentages are relative to the repository count per tool. Column totals can exceed the overall repository count because a repository can configure several tools.</p>
+      <p class="chart-desc">The main programming languages of the repositories that configure each tool. No specific tool denotes the repositories with only shared configuration artifacts, such as <code>AGENTS.md</code>, <code>.agents/skills</code> or a root <code>.mcp.json</code>. Percentages are relative to the repository count per tool. Column totals can exceed the overall repository count because a repository can configure several tools.</p>
       <div class="chart-container"></div>
     </div>
   </div>
@@ -249,7 +247,7 @@
   <div class="chart-row" style="margin-top:1.5rem">
     <div class="chart-panel" id="chart-tool-cooccurrence">
       <h3>Tool Co-Occurrence</h3>
-      <p class="chart-desc">Co-occurrence of tools across repositories. Percentages are relative to the smaller group in each pair.</p>
+      <p class="chart-desc">Repositories that configure both tools of a pair. Each percentage is relative to the repositories of the less common tool of the pair.</p>
       <div class="chart-container"></div>
     </div>
     <div class="chart-panel" id="chart-reference-network">
@@ -262,7 +260,7 @@
   <div class="chart-grid" style="margin-top:1.5rem">
     <div class="chart-panel" id="chart-upset">
       <h3>Tool Usage Combinations (Exclusive Intersections)</h3>
-      <p class="chart-desc">Each bar shows repositories that have exactly that combination of tools and no others. A repository appears in exactly one bar.</p>
+      <p class="chart-desc">Each bar counts the repositories that configure exactly its combination of tools, so each repository appears in one bar.</p>
       <div class="chart-container"></div>
     </div>
   </div>
@@ -275,7 +273,7 @@
     </div>
     <div class="chart-panel" id="chart-creation-order">
       <h3>Creation Order Sequences</h3>
-      <p class="chart-desc">Creation order of the context file categories per repository, by the creation date of the earliest file of each category. A file is dated by the commit that created it under whatever name it had then, so a file renamed into a category keeps its creation date from before the rename. Curly braces indicate that files were added on the same day.</p>
+      <p class="chart-desc">Creation order of the context file categories per repository, by the creation date of the earliest file of each category. A file is dated by the commit that created it under whatever name it had then, so a file renamed into a category keeps its creation date from before the rename. Curly braces group the categories when their earliest files were created on the same day.</p>
       <div class="chart-container"></div>
     </div>
   </div>
@@ -283,7 +281,7 @@
   <div class="chart-grid" style="margin-top:1.5rem">
     <div class="chart-panel" id="chart-cumulative-adoption">
       <h3>Creation of the Earliest Configuration Artifacts</h3>
-      <p class="chart-desc">The cumulative number of repositories by the month in which their earliest file of each kind was created, for the five kinds of context file and the skills and subagents of the earlier version of the dataset, and for the planning documents. A file is dated by the commit that created it, also under an earlier name. Files created before 2023 are left out: they were written for another purpose and only later renamed into a configuration or named by one, such as a development document that a repository renamed to <code>claude.md</code> and then to <code>AGENTS.md</code>. Copilot Instructions are <code>.github/copilot-instructions.md</code> and <code>.github/instructions/*.instructions.md</code>.</p>
+      <p class="chart-desc">The cumulative number of repositories by the month in which their earliest file of each kind was created, for five kinds of context file, for skills and subagents, and for planning documents. A file is dated by the commit that created it under whatever name it had then. Files created before 2023 are left out, because they were written for another purpose and only later renamed into a context file or named in a configuration, such as a development document that a repository renamed to <code>claude.md</code> and then to <code>AGENTS.md</code>. The Copilot Instructions line counts <code>.github/copilot-instructions.md</code> and <code>.github/instructions/*.instructions.md</code>.</p>
       <div class="chart-container"></div>
     </div>
   </div>
@@ -317,7 +315,7 @@
 
 <section id="commits">
   <h2>AI Commits<a class="section-anchor" href="#commits" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h2>
-  <p class="section-desc">Commits that credit one of the six tools, detected through their authors, their trailers and their messages.</p>
+  <p class="section-desc">Commits that credit one of the six tools or another tool, detected through their authors, their trailers and their messages.</p>
   <div class="filter-bar" id="commit-filter-bar">
     <input type="text" id="commit-search" placeholder="Filter commit messages...">
     <div class="platform-toggle" id="commit-tool-toggles"></div>
@@ -329,7 +327,7 @@
 
 <section id="artifacts">
   <h2>Configuration Artifacts<a class="section-anchor" href="#artifacts" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h2>
-  <p class="section-desc">Browse individual configuration artifacts by mechanism, and the planning documents and the imports, which are no configuration artifacts.</p>
+  <p class="section-desc">Browse the configuration artifacts of each mechanism. Two further tabs list the planning documents and the imports, which are not configuration artifacts.</p>
   <div class="tab-bar" id="artifact-tabs"></div>
   <div id="artifact-results-info" class="results-info"></div>
   <div id="artifact-content"></div>
@@ -338,13 +336,13 @@
 
 <section id="downloads">
   <h2>Downloads<a class="section-anchor" href="#downloads" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h2>
-  <p class="section-desc">Download the complete dataset files. Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" style="color:#1d4ed8;text-decoration:none;">CC BY 4.0</a>. The data is also available on <a href="https://doi.org/10.5281/zenodo.24058026" style="color:#1d4ed8;text-decoration:none;">Zenodo</a>.</p>
+  <p class="section-desc">Download the files of the dataset, which is licensed under <a href="https://creativecommons.org/licenses/by/4.0/" style="color:#1d4ed8;text-decoration:none;">CC BY 4.0</a> and archived on <a href="https://doi.org/10.5281/zenodo.24058026" style="color:#1d4ed8;text-decoration:none;">Zenodo</a>.</p>
   <div class="download-grid" id="download-grid"></div>
 </section>
 
 <section id="usage-example">
   <h2>Usage Example<a class="section-anchor" href="#usage-example" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h2>
-  <p class="section-desc">Study research questions with <a href="https://pandas.pydata.org/" style="color:#1d4ed8;text-decoration:none;">pandas</a>, such as which agents engineered software projects configure, whether agents co-author their own instructions, and how often an import in an instruction file reaches no file. The <a href="https://doi.org/10.5281/zenodo.24058028" style="color:#1d4ed8;text-decoration:none;">pipeline on Zenodo</a> contains further data analysis scripts.</p>
+  <p class="section-desc">The example uses <a href="https://pandas.pydata.org/" style="color:#1d4ed8;text-decoration:none;">pandas</a> to study questions such as which tools the engineered software projects configure, whether agents co-author their own instructions, and how often an import in a configuration artifact reaches no file. The <a href="https://doi.org/10.5281/zenodo.24058028" style="color:#1d4ed8;text-decoration:none;">pipeline on Zenodo</a> contains further analysis scripts.</p>
   <div class="code-wrapper">
     <div class="code-actions">
       <button class="code-btn" onclick="copyCode(this)" title="Copy to clipboard"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3.5A1.5 1.5 0 0 1 2 9.5v-7A1.5 1.5 0 0 1 3.5 1h7A1.5 1.5 0 0 1 12 2.5V5"/></svg> Copy</button>
@@ -356,17 +354,21 @@ pd.set_option(<span class="string">"display.width"</span>, 120)
 pd.set_option(<span class="string">"display.max_columns"</span>, 10)
 
 <span class="comment"># Run this script in the directory of the downloaded release, after extracting repos.csv.7z and</span>
-<span class="comment"># commits.csv.7z with `7z x &lt;archive&gt;`. The flag columns hold TRUE and FALSE.</span>
+<span class="comment"># commits.csv.7z with `7z x &lt;archive&gt;`. The script reads only the CSVs. The files themselves are</span>
+<span class="comment"># in repos_data.7z, which contains the configuration artifacts and the planning documents, and in</span>
+<span class="comment"># imported_files.7z, which contains the files that the configuration artifacts import.</span>
 
-<span class="comment"># repos.csv: the sampled GitHub repositories with their metadata and the label of whether each</span>
-<span class="comment"># hosts an engineered software project ("true", "false" or "unclear"). pandas reads a column of</span>
-<span class="comment"># "true" and "false" alone as booleans, so read the label as text. The configured repositories,</span>
-<span class="comment"># those with a configuration artifact, have a scan date and a flag per tool and mechanism.</span>
+<span class="comment"># repos.csv lists the GitHub repositories in the sampling frame with their metadata and a label of</span>
+<span class="comment"># whether each hosts an engineered software project ("true", "false" or "unclear"). Read the label</span>
+<span class="comment"># as text, because pandas turns a column of only "true" and "false" into booleans. Only the</span>
+<span class="comment"># configured repositories, which contain a configuration artifact, have a scan date and the TRUE</span>
+<span class="comment"># and FALSE flags of the tools and mechanisms.</span>
 repos = pd.read_csv(<span class="string">"repos.csv"</span>, dtype={<span class="string">"engineered_project"</span>: str})
 engineered_repos = repos[repos[<span class="string">"engineered_project"</span>] == <span class="string">"true"</span>]
 configured_repos = repos[repos[<span class="string">"scanned_at"</span>].notna()]
 
-<span class="comment"># Which agents do engineered software projects configure, and in which languages?</span>
+<span class="comment"># Which tools do the engineered software projects configure, and does the choice depend on the</span>
+<span class="comment"># main language of a project?</span>
 tools = [<span class="string">"claude"</span>, <span class="string">"copilot"</span>, <span class="string">"cursor"</span>, <span class="string">"gemini"</span>, <span class="string">"codex"</span>, <span class="string">"opencode"</span>, <span class="string">"no_specific_tool"</span>]
 uses_tool = configured_repos[tools].eq(<span class="keyword">True</span>)
 print(f<span class="string">"{len(configured_repos):,} of {len(engineered_repos):,} engineered projects are configured"</span>)
@@ -374,10 +376,10 @@ print(uses_tool.mean().sort_values(ascending=<span class="keyword">False</span>)
 languages = configured_repos[<span class="string">"mainLanguage"</span>].value_counts().index[:5]
 print(uses_tool.groupby(configured_repos[<span class="string">"mainLanguage"</span>]).mean().loc[languages].round(2))
 
-<span class="comment"># context_files.csv: one row per context file, such as CLAUDE.md or AGENTS.md, with its commit</span>
-<span class="comment"># history. Do agents co-author their own instructions? first_commit_ai_created says whether</span>
-<span class="comment"># the commit that created the file credits a tool, and first_commit_ai_tool names the tool.</span>
-<span class="comment"># AGENTS.md is the file that several tools read, so which tools write it?</span>
+<span class="comment"># Do agents co-author their own instructions? context_files.csv has one row per context file, such</span>
+<span class="comment"># as CLAUDE.md or AGENTS.md. first_commit_ai_created says whether the commit that created the file</span>
+<span class="comment"># credits one of the six tools, and first_commit_ai_tool names the tools that it credits. Several</span>
+<span class="comment"># tools read AGENTS.md, so which tools do the commits that created an AGENTS.md credit?</span>
 context_files = pd.read_csv(<span class="string">"context_files.csv"</span>)
 names = context_files[<span class="string">"context_file"</span>].value_counts().index[:4]
 top_files = context_files[context_files[<span class="string">"context_file"</span>].isin(names)]
@@ -385,25 +387,32 @@ print(top_files.groupby(<span class="string">"context_file"</span>)[<span class=
 agents_md = context_files[context_files[<span class="string">"context_file"</span>] == <span class="string">"AGENTS.md"</span>]
 print(agents_md[<span class="string">"first_commit_ai_tool"</span>].str.split(<span class="string">","</span>).explode().value_counts())
 
-<span class="comment"># imports.csv: one row per import in a configuration artifact, such as @docs/style.md in a</span>
-<span class="comment"># CLAUDE.md, with the file that it reaches. How many imports reach no file, and which</span>
-<span class="comment"># configuration artifacts do the others reach? depth counts the hops of a chain of imports.</span>
+<span class="comment"># How often does an import reach no file, and what do the other imports reach? imports.csv has one</span>
+<span class="comment"># row per import in a configuration artifact, such as @docs/style.md in a CLAUDE.md. target_status</span>
+<span class="comment"># is found for an import that reaches a file of the repository that the tool reads, and otherwise</span>
+<span class="comment"># names the reason, such as missing. For a found file, target_category names its mechanism. The</span>
+<span class="comment"># depth is 1 for an import in the configuration artifact itself and 2 or more for an import in a</span>
+<span class="comment"># file that it imports.</span>
 imports = pd.read_csv(<span class="string">"imports.csv"</span>)
 print(imports[<span class="string">"target_status"</span>].value_counts(normalize=<span class="keyword">True</span>))
 print(imports.loc[imports[<span class="string">"target_status"</span>] == <span class="string">"found"</span>, <span class="string">"target_category"</span>].value_counts())
 print(imports[<span class="string">"depth"</span>].value_counts().sort_index())
 
-<span class="comment"># planning-documents.csv: the specs, plans and task lists that spec-driven development</span>
-<span class="comment"># frameworks and the tools' planning features write. Which frameworks do projects use?</span>
+<span class="comment"># Which spec-driven development frameworks do the projects use, and since when?</span>
+<span class="comment"># planning-documents.csv lists the specs, plans and task lists that these frameworks and the</span>
+<span class="comment"># planning features of the tools write. Its framework column names the framework, or the tool for a</span>
+<span class="comment"># planning feature of a tool.</span>
 planning = pd.read_csv(<span class="string">"planning-documents.csv"</span>)
 planning[<span class="string">"created_at"</span>] = pd.to_datetime(planning[<span class="string">"created_at"</span>], utc=<span class="keyword">True</span>)
 print(planning.groupby(<span class="string">"framework"</span>).agg(repositories=(<span class="string">"repo_name"</span>, <span class="string">"nunique"</span>),
                                         first_document=(<span class="string">"created_at"</span>, <span class="string">"min"</span>))
       .sort_values(<span class="string">"repositories"</span>, ascending=<span class="keyword">False</span>).head(8))
 
-<span class="comment"># commits.csv: the commits that credit a tool. attributions says how each commit credits each</span>
-<span class="comment"># tool: from the tool's account, as a reviewer, with the tool's standard trailer, or by a</span>
-<span class="comment"># project's convention. How many commits credit each tool per month, and in which form?</span>
+<span class="comment"># How many commits credit each tool per month, and how do they credit it? commits.csv lists the</span>
+<span class="comment"># commits that credit one of the six tools, and other_commits.csv those that credit another tool.</span>
+<span class="comment"># attributions gives the form for each tool: account for a commit by the tool's own account,</span>
+<span class="comment"># reviewer for the co-author trailer of a committed review suggestion, standard for a line that</span>
+<span class="comment"># the tool writes itself, and convention for any other line that names the tool.</span>
 commits = pd.read_csv(<span class="string">"commits.csv"</span>, usecols=[<span class="string">"repo_name"</span>, <span class="string">"commit_timestamp"</span>, <span class="string">"ai_tool"</span>,
                                               <span class="string">"attributions"</span>])
 commits[<span class="string">"month"</span>] = pd.to_datetime(commits[<span class="string">"commit_timestamp"</span>], utc=<span class="keyword">True</span>).dt.strftime(<span class="string">"%Y-%m"</span>)
@@ -411,17 +420,16 @@ per_tool = commits.assign(tool=commits[<span class="string">"ai_tool"</span>].st
 print(per_tool.groupby([<span class="string">"month"</span>, <span class="string">"tool"</span>]).size().unstack(fill_value=0).tail(6))
 print(commits[<span class="string">"attributions"</span>].str.split(<span class="string">";"</span>).explode().value_counts().head(10))
 
-<span class="comment"># The other mechanisms have one CSV each, such as skills.csv, hooks.csv and mcp.csv, with the</span>
-<span class="comment"># creation date and the number of commits of each file, and other_commits.csv lists the commits</span>
-<span class="comment"># that credit a tool outside the six. repos_data.7z contains the configuration artifacts, and</span>
-<span class="comment"># imported_files.7z the files that they import. How many skills have a scripts directory?</span>
+<span class="comment"># How many skills come with scripts? Each of the other mechanisms has a CSV of its own, such as</span>
+<span class="comment"># skills.csv, hooks.csv and mcp.csv, with the creation date and the number of commits of each file.</span>
+<span class="comment"># In skills.csv, scripts says whether the folder of a skill has a scripts directory.</span>
 skills = pd.read_csv(<span class="string">"skills.csv"</span>)
 print(f<span class="string">"{skills['scripts'].eq(True).mean():.0%} of the skills have a scripts directory"</span>)</code></pre>
   </div>
 </section>
 
 <footer>
-  Dataset: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> · Pipeline code: <a href="https://opensource.org/license/mit">MIT</a> · Configuration artifact files and commit messages were collected from public GitHub repositories. Their content remains subject to the license terms of the respective source repositories. · Claude Code, with Claude models from Opus 4.6 onward, was used to build this website and to write and revise code and documentation for the pipeline that produced the dataset. The research design and methodology are the work of the human authors.
+  Dataset: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> · Pipeline code: <a href="https://opensource.org/license/mit">MIT</a> · Configuration artifact files and commit messages were collected from public GitHub repositories. Their content remains subject to the licenses of the repositories that they come from. · Claude Code, with Claude models from Opus 4.6 onward, was used to build this website and to write and revise code and documentation for the pipeline that produced the dataset. The research design and methodology are the work of the human authors.
 </footer>
 
 <script>

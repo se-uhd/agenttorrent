@@ -1,25 +1,25 @@
 [
   {
     "filename": "repos.csv.7z",
-    "description": "Main repository dataset (repos.csv) with GitHub metadata, classification, and the tool and mechanism flags",
+    "description": "The repositories in the sampling frame (repos.csv) with their GitHub metadata, the label of whether each hosts an engineered software project, and the flags of the tools and mechanisms",
     "size": 8372864,
     "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/repos.csv.7z"
   },
   {
     "filename": "commits.csv.7z",
-    "description": "Commits that credit one of the six tools (commits.csv), in the repositories with detected configuration",
+    "description": "Commits that credit one of the six tools (commits.csv), in the configured repositories",
     "size": 379826014,
     "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/commits.csv.7z"
   },
   {
     "filename": "other_commits.csv",
-    "description": "Commits attributed to tools outside the six studied tools",
+    "description": "Commits that credit a tool outside the six, in the configured repositories",
     "size": 101393212,
     "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/other_commits.csv"
   },
   {
     "filename": "repos_data.7z",
-    "description": "Configuration artifact files from all repositories",
+    "description": "The configuration artifacts and planning documents of the configured repositories",
     "size": 265745611,
     "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/repos_data.7z"
   },
@@ -85,7 +85,7 @@
   },
   {
     "filename": "planning-documents.csv",
-    "description": "Planning documents, such as the specs and plans of Spec Kit and OpenSpec, which are no configuration artifacts",
+    "description": "Agentic planning documents, such as the specs and plans of Spec Kit and OpenSpec, which the dataset does not count as configuration artifacts",
     "size": 12657149,
     "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/planning-documents.csv"
   },
@@ -97,7 +97,7 @@
   },
   {
     "filename": "imported_files.7z",
-    "description": "Files that configuration artifacts import, such as docs/style.md for @docs/style.md in a CLAUDE.md, unless repos_data.7z contains them as configuration artifacts",
+    "description": "The files that configuration artifacts import, such as the docs/style.md that a CLAUDE.md imports with @docs/style.md. An imported file that is itself a configuration artifact is in repos_data.7z.",
     "size": 946298,
     "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/imported_files.7z"
   }
