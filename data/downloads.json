@@ -97,7 +97,7 @@
   },
   {
     "filename": "imported_files.7z",
-    "description": "The imported files that repos_data.7z does not contain",
+    "description": "Files that configuration artifacts import, such as docs/style.md for @docs/style.md in a CLAUDE.md, unless repos_data.7z contains them as configuration artifacts",
     "size": 946298,
     "url": "https://assets.empirical-software.engineering/data/agenttorrent/2.0.0/imported_files.7z"
   }

@@ -344,7 +344,7 @@
 
 <section id="usage-example">
   <h2>Usage Example<a class="section-anchor" href="#usage-example" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h2>
-  <p class="section-desc">Load and explore the dataset with <a href="https://pandas.pydata.org/" style="color:#1d4ed8;text-decoration:none;">pandas</a>. The <a href="https://doi.org/10.5281/zenodo.24058028" style="color:#1d4ed8;text-decoration:none;">pipeline on Zenodo</a> contains data analysis examples.</p>
+  <p class="section-desc">Study research questions with <a href="https://pandas.pydata.org/" style="color:#1d4ed8;text-decoration:none;">pandas</a>, such as which agents engineered software projects configure, whether agents co-author their own instructions, and how often an import in an instruction file reaches no file. The <a href="https://doi.org/10.5281/zenodo.24058028" style="color:#1d4ed8;text-decoration:none;">pipeline on Zenodo</a> contains further data analysis scripts.</p>
   <div class="code-wrapper">
     <div class="code-actions">
       <button class="code-btn" onclick="copyCode(this)" title="Copy to clipboard"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3.5A1.5 1.5 0 0 1 2 9.5v-7A1.5 1.5 0 0 1 3.5 1h7A1.5 1.5 0 0 1 12 2.5V5"/></svg> Copy</button>
@@ -352,66 +352,71 @@
     </div>
   <pre class="code-block"><code><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
 
-<span class="comment"># repos.csv: main dataset</span>
-<span class="comment"># engineered_project holds the lowercase labels "true", "false" and "unclear"</span>
-<span class="comment"># (the labels of March 2026 write "unsure" for "unclear"). pandas reads a column of</span>
-<span class="comment"># "true" and "false" alone as booleans, so read it as text</span>
-repos = pd.read_csv(<span class="string">"repos.csv"</span>, dtype={<span class="string">"engineered_project"</span>: str})
+pd.set_option(<span class="string">"display.width"</span>, 120)
+pd.set_option(<span class="string">"display.max_columns"</span>, 10)
 
-<span class="comment"># Three populations: the sampling frame, the labeled repositories and the configured repositories</span>
+<span class="comment"># Run this script in the directory of the downloaded release, after extracting repos.csv.7z and</span>
+<span class="comment"># commits.csv.7z with `7z x &lt;archive&gt;`. The flag columns hold TRUE and FALSE.</span>
+
+<span class="comment"># repos.csv: the sampled GitHub repositories with their metadata and the label of whether each</span>
+<span class="comment"># hosts an engineered software project ("true", "false" or "unclear"). pandas reads a column of</span>
+<span class="comment"># "true" and "false" alone as booleans, so read the label as text. The configured repositories,</span>
+<span class="comment"># those with a configuration artifact, have a scan date and a flag per tool and mechanism.</span>
+repos = pd.read_csv(<span class="string">"repos.csv"</span>, dtype={<span class="string">"engineered_project"</span>: str})
 engineered_repos = repos[repos[<span class="string">"engineered_project"</span>] == <span class="string">"true"</span>]
 configured_repos = repos[repos[<span class="string">"scanned_at"</span>].notna()]
 
-<span class="comment"># Tool flags: filter repos by tool</span>
-claude_repos = configured_repos[configured_repos[<span class="string">"claude"</span>] == <span class="keyword">True</span>]
+<span class="comment"># Which agents do engineered software projects configure, and in which languages?</span>
+tools = [<span class="string">"claude"</span>, <span class="string">"copilot"</span>, <span class="string">"cursor"</span>, <span class="string">"gemini"</span>, <span class="string">"codex"</span>, <span class="string">"opencode"</span>, <span class="string">"no_specific_tool"</span>]
+uses_tool = configured_repos[tools].eq(<span class="keyword">True</span>)
+print(f<span class="string">"{len(configured_repos):,} of {len(engineered_repos):,} engineered projects are configured"</span>)
+print(uses_tool.mean().sort_values(ascending=<span class="keyword">False</span>))
+languages = configured_repos[<span class="string">"mainLanguage"</span>].value_counts().index[:5]
+print(uses_tool.groupby(configured_repos[<span class="string">"mainLanguage"</span>]).mean().loc[languages].round(2))
 
-<span class="comment"># Mechanism flags: filter by configuration mechanism</span>
-repos_with_mcp = configured_repos[configured_repos[<span class="string">"mcp"</span>] == <span class="keyword">True</span>]
-
-<span class="comment"># GitHub metadata: stars, forks, contributors, code lines, ...</span>
-popular = configured_repos[configured_repos[<span class="string">"stargazers"</span>] &gt;= 1000]
-
-<span class="comment"># context_files.csv: context file configuration artifacts</span>
+<span class="comment"># context_files.csv: one row per context file, such as CLAUDE.md or AGENTS.md, with its commit</span>
+<span class="comment"># history. Do agents co-author their own instructions? first_commit_ai_created says whether</span>
+<span class="comment"># the commit that created the file credits a tool, and first_commit_ai_tool names the tool.</span>
+<span class="comment"># AGENTS.md is the file that several tools read, so which tools write it?</span>
 context_files = pd.read_csv(<span class="string">"context_files.csv"</span>)
+names = context_files[<span class="string">"context_file"</span>].value_counts().index[:4]
+top_files = context_files[context_files[<span class="string">"context_file"</span>].isin(names)]
+print(top_files.groupby(<span class="string">"context_file"</span>)[<span class="string">"first_commit_ai_created"</span>].apply(<span class="keyword">lambda</span> s: s.eq(<span class="keyword">True</span>).mean()))
+agents_md = context_files[context_files[<span class="string">"context_file"</span>] == <span class="string">"AGENTS.md"</span>]
+print(agents_md[<span class="string">"first_commit_ai_tool"</span>].str.split(<span class="string">","</span>).explode().value_counts())
 
-<span class="comment"># Git metadata: creation dates</span>
-context_files[<span class="string">"created_at"</span>] = pd.to_datetime(context_files[<span class="string">"created_at"</span>])
+<span class="comment"># imports.csv: one row per import in a configuration artifact, such as @docs/style.md in a</span>
+<span class="comment"># CLAUDE.md, with the file that it reaches. How many imports reach no file, and which</span>
+<span class="comment"># configuration artifacts do the others reach? depth counts the hops of a chain of imports.</span>
+imports = pd.read_csv(<span class="string">"imports.csv"</span>)
+print(imports[<span class="string">"target_status"</span>].value_counts(normalize=<span class="keyword">True</span>))
+print(imports.loc[imports[<span class="string">"target_status"</span>] == <span class="string">"found"</span>, <span class="string">"target_category"</span>].value_counts())
+print(imports[<span class="string">"depth"</span>].value_counts().sort_index())
 
-<span class="comment"># AI authorship: which files were initially created by a tool</span>
-ai_created = context_files[context_files[<span class="string">"first_commit_ai_created"</span>] == <span class="keyword">True</span>]
+<span class="comment"># planning-documents.csv: the specs, plans and task lists that spec-driven development</span>
+<span class="comment"># frameworks and the tools' planning features write. Which frameworks do projects use?</span>
+planning = pd.read_csv(<span class="string">"planning-documents.csv"</span>)
+planning[<span class="string">"created_at"</span>] = pd.to_datetime(planning[<span class="string">"created_at"</span>], utc=<span class="keyword">True</span>)
+print(planning.groupby(<span class="string">"framework"</span>).agg(repositories=(<span class="string">"repo_name"</span>, <span class="string">"nunique"</span>),
+                                        first_document=(<span class="string">"created_at"</span>, <span class="string">"min"</span>))
+      .sort_values(<span class="string">"repositories"</span>, ascending=<span class="keyword">False</span>).head(8))
 
-<span class="comment"># References: context files that point to other files</span>
-references = context_files[context_files[<span class="string">"is_reference"</span>] == <span class="keyword">True</span>]
+<span class="comment"># commits.csv: the commits that credit a tool. attributions says how each commit credits each</span>
+<span class="comment"># tool: from the tool's account, as a reviewer, with the tool's standard trailer, or by a</span>
+<span class="comment"># project's convention. How many commits credit each tool per month, and in which form?</span>
+commits = pd.read_csv(<span class="string">"commits.csv"</span>, usecols=[<span class="string">"repo_name"</span>, <span class="string">"commit_timestamp"</span>, <span class="string">"ai_tool"</span>,
+                                              <span class="string">"attributions"</span>])
+commits[<span class="string">"month"</span>] = pd.to_datetime(commits[<span class="string">"commit_timestamp"</span>], utc=<span class="keyword">True</span>).dt.strftime(<span class="string">"%Y-%m"</span>)
+per_tool = commits.assign(tool=commits[<span class="string">"ai_tool"</span>].str.split(<span class="string">","</span>)).explode(<span class="string">"tool"</span>)
+print(per_tool.groupby([<span class="string">"month"</span>, <span class="string">"tool"</span>]).size().unstack(fill_value=0).tail(6))
+print(commits[<span class="string">"attributions"</span>].str.split(<span class="string">";"</span>).explode().value_counts().head(10))
 
-<span class="comment"># Join with repo metadata</span>
-merged = context_files.merge(
-    configured_repos[[<span class="string">"repo_name"</span>, <span class="string">"mainLanguage"</span>, <span class="string">"stargazers"</span>]],
-    on=<span class="string">"repo_name"</span>
-)
-
-<span class="comment"># commits.csv: commits that credit a tool</span>
-commits = pd.read_csv(<span class="string">"commits.csv"</span>)
-commits[<span class="string">"commit_timestamp"</span>] = pd.to_datetime(commits[<span class="string">"commit_timestamp"</span>])
-
-<span class="comment"># Filter by tool (e.g., "Claude", "Copilot", "Cursor")</span>
-claude_commits = commits[commits[<span class="string">"ai_tool"</span>].str.contains(<span class="string">"Claude"</span>)]
-
-<span class="comment"># The per-mechanism CSVs</span>
-skills = pd.read_csv(<span class="string">"skills.csv"</span>) <span class="comment"># skill definitions</span>
-subagents = pd.read_csv(<span class="string">"subagents.csv"</span>) <span class="comment"># subagent definitions</span>
-commands = pd.read_csv(<span class="string">"commands.csv"</span>) <span class="comment"># custom commands</span>
-rules = pd.read_csv(<span class="string">"rules.csv"</span>) <span class="comment"># rule files</span>
-settings = pd.read_csv(<span class="string">"settings.csv"</span>) <span class="comment"># settings files</span>
-hooks = pd.read_csv(<span class="string">"hooks.csv"</span>) <span class="comment"># hook configurations</span>
-mcp = pd.read_csv(<span class="string">"mcp.csv"</span>) <span class="comment"># MCP configurations</span>
-plugins = pd.read_csv(<span class="string">"plugins.csv"</span>) <span class="comment"># plugin and extension manifests</span>
-lsp = pd.read_csv(<span class="string">"lsp.csv"</span>) <span class="comment"># LSP server configurations</span>
-
-<span class="comment"># All per-mechanism CSVs share these columns: repo_name, created_at, #commits,</span>
-<span class="comment"># github_link, first/last_commit_sha</span>
-<span class="comment"># Some have extra columns (e.g., skills: name, scripts, references)</span>
-skills_with_scripts = skills[skills[<span class="string">"scripts"</span>] == <span class="keyword">True</span>]
-agents_with_memory = subagents[subagents[<span class="string">"memory"</span>] == <span class="keyword">True</span>]</code></pre>
+<span class="comment"># The other mechanisms have one CSV each, such as skills.csv, hooks.csv and mcp.csv, with the</span>
+<span class="comment"># creation date and the number of commits of each file, and other_commits.csv lists the commits</span>
+<span class="comment"># that credit a tool outside the six. repos_data.7z contains the configuration artifacts, and</span>
+<span class="comment"># imported_files.7z the files that they import. How many skills have a scripts directory?</span>
+skills = pd.read_csv(<span class="string">"skills.csv"</span>)
+print(f<span class="string">"{skills['scripts'].eq(True).mean():.0%} of the skills have a scripts directory"</span>)</code></pre>
   </div>
 </section>
 
