@@ -196,8 +196,8 @@
 
 <header id="top">
   <h1>AgentTorrent<a class="section-anchor" href="#top" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h1>
-  <p class="subtitle">A dataset of the context and harness configuration of coding agents in engineered software projects on GitHub. It contains the configuration artifacts of six tools, the files that these configuration artifacts import, agentic planning documents, and the commits that credit the tools. The tools are Claude Code, GitHub Copilot, OpenAI Codex, Cursor, OpenCode and Gemini, which includes Antigravity, Google's successor to Gemini CLI.</p>
-  <p class="paper-ref">To cite this dataset, cite its release on Zenodo:</p>
+  <p class="subtitle">A dataset of the context and harness configuration of coding agents in engineered software projects on GitHub. It contains configuration artifacts for six tools, their imported files, agentic planning documents, and commits that credit the tools. The tools are Claude Code, GitHub Copilot, OpenAI Codex, Cursor, OpenCode and Gemini, which includes Antigravity, Google's successor to Gemini CLI.</p>
+  <p class="paper-ref">Cite the dataset release on Zenodo:</p>
   <p class="paper-ref"><strong>AgentTorrent: A Dataset of Context and Harness Engineering Artifacts on GitHub.</strong><br>
   Sebastian Baltes, Seyedmoein Mohsenimofidi, Levi Böhme, Vahram Nersesyan, Muhammad Auwal Abubakar, Jai Lal Lulla, Matthias Galster, and Christoph Treude.<br>
   Zenodo, 2026.<br>
@@ -234,7 +234,7 @@
   <div class="chart-row">
     <div class="chart-panel" id="chart-config-tool-heatmap">
       <h3>Configuration Mechanisms per Tool</h3>
-      <p class="chart-desc">Repositories with a configuration artifact of each mechanism, by the tool to which the dataset attributes the file. A file attributed to several tools counts under each of them. A shared file such as <code>AGENTS.md</code> is attributed to no tool and counts in no tool column. The last column counts the repositories with no specific tool, which have only shared configuration artifacts. Percentages are relative to the repository count per tool. Column totals can exceed the overall repository count because a repository can configure several tools.</p>
+      <p class="chart-desc">Repositories with each mechanism, by the tool attributed to each configuration artifact. Files attributed to several tools count under each tool. Shared files such as <code>AGENTS.md</code> count in no tool column. The last column counts repositories with only shared configuration artifacts (No specific tool). Percentages use the repository count per tool. Column totals can exceed the overall repository count because repositories can configure several tools.</p>
       <div class="chart-container"></div>
     </div>
     <div class="chart-panel" id="chart-language-tool-heatmap">
@@ -247,12 +247,12 @@
   <div class="chart-row" style="margin-top:1.5rem">
     <div class="chart-panel" id="chart-tool-cooccurrence">
       <h3>Tool Co-Occurrence</h3>
-      <p class="chart-desc">Repositories that configure both tools of a pair. Each percentage is relative to the repositories of the less common tool of the pair.</p>
+      <p class="chart-desc">Repositories that configure both tools in a pair. Percentages use the repository count of the less common tool.</p>
       <div class="chart-container"></div>
     </div>
     <div class="chart-panel" id="chart-reference-network">
       <h3>Reference Network Between Context Files</h3>
-      <p class="chart-desc">Context files that only point at another file, by their own category and the category of the file that they point at. Other covers files such as <code>README.md</code> and <code>CONTRIBUTING.md</code>.</p>
+      <p class="chart-desc">Context files that only reference another file, by source and target category. Other covers files such as <code>README.md</code> and <code>CONTRIBUTING.md</code>.</p>
       <div class="chart-container"></div>
     </div>
   </div>
@@ -268,12 +268,12 @@
   <div class="chart-row" style="margin-top:1.5rem">
     <div class="chart-panel" id="chart-count-distribution">
       <h3>Distribution of Configuration Artifacts per Repository</h3>
-      <p class="chart-desc">The number of context files, skills and subagents per repository, each in percent of the repositories with at least one of that mechanism.</p>
+      <p class="chart-desc">Counts of context files, skills, and subagents per repository. For each mechanism, percentages use repositories with at least one configuration artifact of that mechanism.</p>
       <div class="chart-container"></div>
     </div>
     <div class="chart-panel" id="chart-creation-order">
       <h3>Creation Order Sequences</h3>
-      <p class="chart-desc">Creation order of the context file categories per repository, by the creation date of the earliest file of each category. A file is dated by the commit that created it under whatever name it had then, so a file renamed into a category keeps its creation date from before the rename. Curly braces group the categories when their earliest files were created on the same day.</p>
+      <p class="chart-desc">Context file categories in the order that their earliest files were created in each repository. Creation dates follow the original commit, including before a file was renamed into a category. Curly braces group categories with earliest files created on the same day.</p>
       <div class="chart-container"></div>
     </div>
   </div>
@@ -315,7 +315,7 @@
 
 <section id="commits">
   <h2>AI Commits<a class="section-anchor" href="#commits" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h2>
-  <p class="section-desc">Commits that credit one of the six tools or another tool, detected through their authors, their trailers and their messages.</p>
+  <p class="section-desc">Commits that credit any tool, detected through authors, trailers, and messages.</p>
   <div class="filter-bar" id="commit-filter-bar">
     <input type="text" id="commit-search" placeholder="Filter commit messages...">
     <div class="platform-toggle" id="commit-tool-toggles"></div>
@@ -327,7 +327,7 @@
 
 <section id="artifacts">
   <h2>Configuration Artifacts<a class="section-anchor" href="#artifacts" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h2>
-  <p class="section-desc">Browse the configuration artifacts of each mechanism. Two further tabs list the planning documents and the imports, which are not configuration artifacts.</p>
+  <p class="section-desc">Browse configuration artifacts by mechanism, or use the planning document and import tabs. Planning documents and imports are not configuration artifacts.</p>
   <div class="tab-bar" id="artifact-tabs"></div>
   <div id="artifact-results-info" class="results-info"></div>
   <div id="artifact-content"></div>
@@ -342,7 +342,7 @@
 
 <section id="usage-example">
   <h2>Usage Example<a class="section-anchor" href="#usage-example" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h2>
-  <p class="section-desc">The example uses <a href="https://pandas.pydata.org/" style="color:#1d4ed8;text-decoration:none;">pandas</a> to study questions such as which tools the engineered software projects configure, whether agents co-author their own instructions, and how often an import in a configuration artifact reaches no file. The <a href="https://doi.org/10.5281/zenodo.24058028" style="color:#1d4ed8;text-decoration:none;">pipeline on Zenodo</a> contains further analysis scripts.</p>
+  <p class="section-desc">The <a href="https://pandas.pydata.org/" style="color:#1d4ed8;text-decoration:none;">pandas</a> example explores which tools engineered software projects configure, whether agents co-author their own instructions, and how often configuration imports reach no file. The <a href="https://doi.org/10.5281/zenodo.24058028" style="color:#1d4ed8;text-decoration:none;">pipeline on Zenodo</a> contains further analysis scripts.</p>
   <div class="code-wrapper">
     <div class="code-actions">
       <button class="code-btn" onclick="copyCode(this)" title="Copy to clipboard"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3.5A1.5 1.5 0 0 1 2 9.5v-7A1.5 1.5 0 0 1 3.5 1h7A1.5 1.5 0 0 1 12 2.5V5"/></svg> Copy</button>
