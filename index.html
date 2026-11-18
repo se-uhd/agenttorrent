@@ -298,6 +298,9 @@
       <div class="platform-toggle" id="tool-toggles"></div>
       <span style="width:1px;height:20px;background:#d6d3d1"></span>
       <div class="platform-toggle" id="config-chips"></div>
+      <span style="width:1px;height:20px;background:#d6d3d1"></span>
+      <div class="platform-toggle" id="extension-chips"></div>
+      <select id="framework-filter"><option value="">All planning frameworks</option></select>
     </div>
   </div>
   <div id="repo-results-info" class="results-info" style="display:flex;justify-content:space-between;align-items:center">
@@ -329,6 +332,10 @@
   <h2>Configuration Artifacts<a class="section-anchor" href="#artifacts" onclick="navigator.clipboard.writeText(this.href)" title="Copy link to section"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.148l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.052"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.148L2.75 8.506a3.25 3.25 0 0 0 4.596 4.596L8.5 11.948"/></svg></a></h2>
   <p class="section-desc">Browse configuration artifacts by mechanism, or use the planning document and import tabs. Planning documents and imports are not configuration artifacts.</p>
   <div class="tab-bar" id="artifact-tabs"></div>
+  <div class="filter-bar" id="artifact-filter-bar">
+    <input type="text" id="artifact-search" placeholder="Filter by repository or path...">
+    <div id="artifact-selects" style="display:flex;gap:0.75rem;flex-wrap:wrap"></div>
+  </div>
   <div id="artifact-results-info" class="results-info"></div>
   <div id="artifact-content"></div>
   <div id="artifact-pagination" class="pagination"></div>
@@ -443,6 +450,18 @@ const TOOL_TITLES = {gemini:'Gemini CLI, Gemini Code Assist and Antigravity, whi
 const TOOL_COLORS = {Claude:'#87ceeb',Copilot:'#ef9a9a',Cursor:'#ffcc80',Gemini:'#fff176',Codex:'#90ee90','No specific tool':'#ce93d8'};
 const CONFIG_KEYS = ['context_file','skills','subagents','commands','rules','settings','hooks','mcp','plugins','lsp'];
 const MECHANISM_LABELS = {context_file:'Context Files',skills:'Skills',subagents:'Subagents',commands:'Commands',rules:'Rules',settings:'Settings',hooks:'Hooks',mcp:'MCP',plugins:'Plugins',lsp:'LSP'};
+// The two extensions beside the configuration artifacts, which the repository list filters by
+// as it filters by the mechanisms, and which the configuration browser shows in tabs of their own.
+const EXTENSION_KEYS = ['planning_documents','imports'];
+const EXTENSION_LABELS = {planning_documents:'Planning documents',imports:'Imports'};
+const EXTENSION_TITLES = {planning_documents:'Repositories with a planning document, which is not a configuration artifact',
+  imports:'Repositories with a configuration artifact that imports a file'};
+// The columns of each tab of the configuration browser that a select filters by, with the label
+// of the option that shows every row.
+const ARTIFACT_SELECTS = {
+  planning_documents: [['framework', 'All frameworks'], ['document', 'All documents']],
+  imports: [['tool', 'All tools'], ['target_status', 'All statuses']],
+};
 const BADGE_CLASSES = {claude:'badge-claude',copilot:'badge-copilot',cursor:'badge-cursor',gemini:'badge-gemini',codex:'badge-codex',opencode:'badge-opencode',no_specific_tool:'badge-no-specific-tool'};
 const REPOS_PER_PAGE = 25;
 
@@ -472,6 +491,10 @@ let commitSearchDelay;
 let artifactData = {};
 const artifactRequests = {};
 let currentArtifactTab = 'context_files';
+// The search of the configuration browser, which every tab applies, and the value of each select
+// of the shown tab by column, which a change of tab clears.
+let artifactQuery = '';
+let artifactSelections = {};
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 function fmt(n) { return n == null ? '-' : n.toLocaleString(); }
@@ -622,12 +645,28 @@ function renderFilterBar() {
     chips.appendChild(btn);
   });
 
+  const extensionChips = document.getElementById('extension-chips');
+  EXTENSION_KEYS.forEach(k => {
+    const btn = document.createElement('button');
+    btn.textContent = EXTENSION_LABELS[k];
+    btn.title = EXTENSION_TITLES[k];
+    btn.dataset.extension = k;
+    btn.onclick = () => { btn.classList.toggle('active'); applyFilters(); };
+    extensionChips.appendChild(btn);
+  });
+
   const langs = [...new Set(INDEX.map(r => r.mainLanguage).filter(Boolean))].sort();
   const sel = document.getElementById('language-filter');
   langs.forEach(l => { const o = document.createElement('option'); o.value = l; o.textContent = l; sel.appendChild(o); });
 
+  // The frameworks of the planning documents, which only a repository with one lists.
+  const frameworks = [...new Set(INDEX.flatMap(r => r.planning_frameworks || []))].sort();
+  const frameworkSel = document.getElementById('framework-filter');
+  frameworks.forEach(f => { const o = document.createElement('option'); o.value = f; o.textContent = f; frameworkSel.appendChild(o); });
+
   document.getElementById('repo-search').oninput = () => applyFilters();
   sel.onchange = () => applyFilters();
+  frameworkSel.onchange = () => applyFilters();
   document.getElementById('sort-select').onchange = () => applyFilters();
 }
 
@@ -635,14 +674,18 @@ function applyFilters() {
   const query = document.getElementById('repo-search').value.toLowerCase();
   const activeTools = [...document.querySelectorAll('#tool-toggles button.active')].map(b => b.dataset.tool);
   const activeConfigs = [...document.querySelectorAll('#config-chips button.active')].map(c => c.dataset.config);
+  const activeExtensions = [...document.querySelectorAll('#extension-chips button.active')].map(c => c.dataset.extension);
   const lang = document.getElementById('language-filter').value;
+  const framework = document.getElementById('framework-filter').value;
   const sort = document.getElementById('sort-select').value;
 
   FILTERED = INDEX.filter(r => {
     if (query && !r.repo_name.toLowerCase().includes(query)) return false;
     if (activeTools.length && !activeTools.some(t => r[t])) return false;
     if (activeConfigs.length && !activeConfigs.some(c => r[c])) return false;
+    if (activeExtensions.length && !activeExtensions.some(k => r[k])) return false;
     if (lang && r.mainLanguage !== lang) return false;
+    if (framework && !(r.planning_frameworks || []).includes(framework)) return false;
     return true;
   });
 
@@ -666,12 +709,14 @@ function renderRepoPage() {
       `<span class="doc-badge ${BADGE_CLASSES[t]}"${TOOL_TITLES[t] ? ` title="${TOOL_TITLES[t]}"` : ''}>${TOOL_LABELS[t]}</span>`).join('');
     const configs = CONFIG_KEYS.filter(c => r[c]).map(c =>
       `<span class="doc-badge badge-config">${MECHANISM_LABELS[c]}</span>`).join('');
+    const extensions = EXTENSION_KEYS.filter(k => r[k]).map(k =>
+      `<span class="doc-badge badge-config">${EXTENSION_LABELS[k]}</span>`).join('');
     return `
     <div class="doc-card" data-repo="${escapeHtml(r.repo_name)}">
       <div class="doc-card-header" onclick="toggleRepo(this)">
         <div class="doc-card-left">
           <h3><a href="${escapeHtml(r.github_link)}" target="_blank" onclick="event.stopPropagation()">${escapeHtml(r.repo_name)}</a></h3>
-          <div class="doc-card-badges">${tools} ${configs}</div>
+          <div class="doc-card-badges">${tools} ${configs} ${extensions}</div>
         </div>
         <div class="doc-card-right">
           <div class="doc-card-meta">
@@ -1025,6 +1070,14 @@ function initArtifacts() {
     };
     tabs.appendChild(btn);
   });
+  document.getElementById('artifact-search').oninput = e => {
+    artifactQuery = e.target.value.trim().toLowerCase();
+    applyArtifactFilters();
+  };
+  document.getElementById('artifact-selects').onchange = e => {
+    artifactSelections[e.target.dataset.column] = e.target.value;
+    applyArtifactFilters();
+  };
   // The first tab loads when the browser comes into view, as a chart does, so that a visitor who
   // does not scroll to it does not download its table.
   const observer = new IntersectionObserver(entries => {
@@ -1039,7 +1092,10 @@ let artifactPage = 0;
 
 async function loadArtifact(key) {
   const container = document.getElementById('artifact-content');
-  if (!artifactData[key]) container.innerHTML = '<div class="loading">Loading...</div>';
+  if (!artifactData[key]) {
+    container.innerHTML = '<div class="loading">Loading...</div>';
+    document.getElementById('artifact-selects').innerHTML = '';
+  }
   let rows;
   try {
     rows = await requestOnce(artifactRequests, key, `data/artifacts/${key}.json`);
@@ -1051,11 +1107,44 @@ async function loadArtifact(key) {
   // A tab that finishes loading after another tab was selected renders nothing.
   if (key !== currentArtifactTab) return;
   artifactPage = 0;
+  renderArtifactSelects(key);
   renderArtifactPage(key);
 }
 
+// The selects of the tab `key`, each with the values of its column in the rows of the tab and
+// an option that shows every row, which is chosen until the visitor picks a value.
+function renderArtifactSelects(key) {
+  artifactSelections = {};
+  const rows = artifactData[key];
+  document.getElementById('artifact-selects').innerHTML = (ARTIFACT_SELECTS[key] || []).map(([column, all]) => {
+    const values = [...new Set(rows.map(row => row[column]).filter(v => v != null && v !== ''))].sort();
+    const label = value => column === 'tool' ? (TOOL_LABELS[value] || value) : value;
+    return `<select data-column="${column}"><option value="">${all}</option>` +
+      values.map(v => `<option value="${escapeHtml(String(v))}">${escapeHtml(String(label(v)))}</option>`).join('') +
+      '</select>';
+  }).join('');
+}
+
+// The rows of the tab `key` with the search in the repository or the path, and with the chosen
+// value of each select.
+function filteredArtifacts(key) {
+  const pathCol = getArtifactPathCol(key);
+  const chosen = Object.entries(artifactSelections).filter(([, value]) => value);
+  return artifactData[key].filter(row =>
+    (!artifactQuery || String(row.repo_name ?? '').toLowerCase().includes(artifactQuery)
+      || String(row[pathCol] ?? '').toLowerCase().includes(artifactQuery))
+    && chosen.every(([column, value]) => String(row[column] ?? '') === value));
+}
+
+// Show the first page of the shown tab under the current search and selects, once it has loaded.
+function applyArtifactFilters() {
+  if (!artifactData[currentArtifactTab]) return;
+  artifactPage = 0;
+  renderArtifactPage(currentArtifactTab);
+}
+
 function renderArtifactPage(key) {
-  const data = artifactData[key];
+  const data = filteredArtifacts(key);
   const start = artifactPage * REPOS_PER_PAGE;
   const end = Math.min(start + REPOS_PER_PAGE, data.length);
   const rows = data.slice(start, end);
