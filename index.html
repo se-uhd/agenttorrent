@@ -334,6 +334,7 @@
   <div class="tab-bar" id="artifact-tabs"></div>
   <div class="filter-bar" id="artifact-filter-bar">
     <input type="text" id="artifact-search" placeholder="Filter by repository or path...">
+    <div class="platform-toggle" id="artifact-tool-toggles"></div>
     <div id="artifact-selects" style="display:flex;gap:0.75rem;flex-wrap:wrap"></div>
   </div>
   <div id="artifact-results-info" class="results-info"></div>
@@ -459,8 +460,8 @@ const EXTENSION_TITLES = {planning_documents:'Repositories with a planning docum
 // The columns of each tab of the configuration browser that a select filters by, with the label
 // of the option that shows every row.
 const ARTIFACT_SELECTS = {
-  planning_documents: [['framework', 'All frameworks'], ['document', 'All documents']],
-  imports: [['tool', 'All tools'], ['target_status', 'All statuses']],
+  planning_documents: [['framework', 'All frameworks']],
+  imports: [['target_status', 'All statuses']],
 };
 const BADGE_CLASSES = {claude:'badge-claude',copilot:'badge-copilot',cursor:'badge-cursor',gemini:'badge-gemini',codex:'badge-codex',opencode:'badge-opencode',no_specific_tool:'badge-no-specific-tool'};
 const REPOS_PER_PAGE = 25;
@@ -495,6 +496,9 @@ let currentArtifactTab = 'context_files';
 // of the shown tab by column, which a change of tab clears.
 let artifactQuery = '';
 let artifactSelections = {};
+// The tools of the pressed tool buttons of the configuration browser, which every tab with a tool
+// column applies and which a change of tab keeps.
+let artifactTools = [];
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 function fmt(n) { return n == null ? '-' : n.toLocaleString(); }
@@ -1070,6 +1074,20 @@ function initArtifacts() {
     };
     tabs.appendChild(btn);
   });
+  const toolToggles = document.getElementById('artifact-tool-toggles');
+  TOOL_KEYS.forEach(t => {
+    const btn = document.createElement('button');
+    btn.textContent = TOOL_LABELS[t];
+    if (TOOL_TITLES[t]) btn.title = TOOL_TITLES[t];
+    btn.dataset.tool = t;
+    btn.onclick = () => {
+      btn.classList.toggle('active');
+      artifactTools = artifactTools.includes(t) ? artifactTools.filter(x => x !== t)
+                                                : [...artifactTools, t];
+      applyArtifactFilters();
+    };
+    toolToggles.appendChild(btn);
+  });
   document.getElementById('artifact-search').oninput = e => {
     artifactQuery = e.target.value.trim().toLowerCase();
     applyArtifactFilters();
@@ -1108,7 +1126,20 @@ async function loadArtifact(key) {
   if (key !== currentArtifactTab) return;
   artifactPage = 0;
   renderArtifactSelects(key);
+  document.getElementById('artifact-tool-toggles').style.display = hasToolColumn(key) ? '' : 'none';
   renderArtifactPage(key);
+}
+
+// Whether the rows of the tab `key` name the tools that read them, as every tab but the planning
+// documents does.
+function hasToolColumn(key) {
+  return getArtifactColumns(key).some(column => column.key === 'tool');
+}
+
+// The tool keys of TOOL_KEYS that the `tool` value of a row names: the tools that it joins with
+// `|`, such as `claude|cursor`, and No specific tool for a shared file, which the CSVs write `any`.
+function rowTools(value) {
+  return value === 'any' ? ['no_specific_tool'] : String(value ?? '').split('|');
 }
 
 // The selects of the tab `key`, each with the values of its column in the rows of the tab and
@@ -1130,13 +1161,16 @@ function renderArtifactSelects(key) {
 function filteredArtifacts(key) {
   const pathCol = getArtifactPathCol(key);
   const chosen = Object.entries(artifactSelections).filter(([, value]) => value);
+  const tools = hasToolColumn(key) ? artifactTools : [];
   return artifactData[key].filter(row =>
     (!artifactQuery || String(row.repo_name ?? '').toLowerCase().includes(artifactQuery)
       || String(row[pathCol] ?? '').toLowerCase().includes(artifactQuery))
+    && (!tools.length || rowTools(row.tool).some(t => tools.includes(t)))
     && chosen.every(([column, value]) => String(row[column] ?? '') === value));
 }
 
-// Show the first page of the shown tab under the current search and selects, once it has loaded.
+// Show the first page of the shown tab under the current search, tool buttons and selects, once
+// it has loaded.
 function applyArtifactFilters() {
   if (!artifactData[currentArtifactTab]) return;
   artifactPage = 0;
@@ -1194,6 +1228,7 @@ function getArtifactColumns(key) {
   const base = [{ key: 'repo_name', label: 'Repository' }];
   const pathCol = getArtifactPathCol(key);
   if (pathCol) base.push({ key: pathCol, label: 'Path' });
+  if (!['planning_documents', 'imports'].includes(key)) base.push({ key: 'tool', label: 'Tool' });
   if (['skills','subagents','commands','rules'].includes(key)) base.push({ key: 'name', label: 'Name' });
   if (key === 'context_files') {
     base.push({ key: 'language', label: 'Language' });
