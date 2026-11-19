@@ -73,7 +73,7 @@
   },
   {
     "filename": "plugins.csv",
-    "description": "Plugin and extension manifests",
+    "description": "Plugin and extension manifests, plugin marketplaces and other plugin files",
     "size": 268785,
     "url": "https://assets.empirical-software.engineering/data/agenttorrent/1.0.0/plugins.csv"
   },
@@ -91,7 +91,7 @@
   },
   {
     "filename": "imports.csv",
-    "description": "Imports of the configuration artifacts, such as @docs/style.md in a CLAUDE.md, with the file that each reaches",
+    "description": "Imports of the configuration artifacts, such as @docs/style.md in a CLAUDE.md, with the file that each import reaches",
     "size": 3644541,
     "url": "https://assets.empirical-software.engineering/data/agenttorrent/1.0.0/imports.csv"
   },

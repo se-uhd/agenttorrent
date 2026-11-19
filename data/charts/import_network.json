@@ -1,0 +1,94 @@
+{
+  "sources": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "Instructions",
+    "GEMINI.md",
+    "Other context",
+    "Other artifact",
+    "Other file"
+  ],
+  "targets": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "Instructions",
+    "GEMINI.md",
+    "Other context",
+    "Other artifact",
+    "Other file",
+    "No file"
+  ],
+  "matrix": [
+    [
+      8,
+      31,
+      3,
+      1,
+      0,
+      6,
+      112,
+      788
+    ],
+    [
+      2261,
+      3,
+      13,
+      0,
+      3,
+      21,
+      142,
+      570
+    ],
+    [
+      4,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      44
+    ],
+    [
+      64,
+      1,
+      1,
+      0,
+      0,
+      0,
+      14,
+      6
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      2,
+      2
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      2,
+      50
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      9,
+      49
+    ]
+  ],
+  "n_files": 4073
+}

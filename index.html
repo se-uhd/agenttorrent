@@ -63,6 +63,15 @@
     .filter-bar input[type="text"] { flex: 1; min-width: 200px; padding: 0.35rem 0; border: none; border-bottom: 1px solid #e7e5e4; border-radius: 0; font-size: 0.8rem; font-family: inherit; outline: none; background: transparent; }
     .filter-bar input[type="text"]:focus { border-color: #78716c; }
     .filter-bar select { padding: 0.3rem 0.5rem; font-size: 0.7rem; font-family: inherit; border: 1px solid #e7e5e4; background: #fff; color: #57534e; cursor: pointer; border-radius: 0; }
+    /* Groups of filters with a line between two groups only where they share a row: the inner box
+       starts left of the outer one by the width of the line and the space after it, which the
+       outer box clips at the start of every row. */
+    .filter-groups { overflow: hidden; }
+    .filter-groups > div { display: flex; flex-wrap: wrap; align-items: center; row-gap: 0.5rem; margin-left: calc(-0.75rem - 1px); }
+    .filter-group { display: flex; align-items: center; padding-left: 0.75rem; margin-right: 0.75rem; border-left: 1px solid #d6d3d1; }
+    /* A group without filters, such as the selects of a tab that has none, takes no line. */
+    .filter-group:empty { display: none; }
+    #artifact-selects { gap: 0.75rem; flex-wrap: wrap; }
     .platform-toggle { display: flex; gap: 0; }
     .platform-toggle button { padding: 0.3rem 0.6rem; font-size: 0.7rem; font-family: inherit; border: 1px solid #e7e5e4; background: #fff; color: #78716c; cursor: pointer; }
     .platform-toggle button:not(:first-child) { border-left: 0; }
@@ -245,14 +254,14 @@
   </div>
 
   <div class="chart-row" style="margin-top:1.5rem">
-    <div class="chart-panel" id="chart-tool-cooccurrence">
-      <h3>Tool Co-Occurrence</h3>
-      <p class="chart-desc">Repositories that configure both tools in a pair. Percentages use the repository count of the less common tool.</p>
-      <div class="chart-container"></div>
-    </div>
     <div class="chart-panel" id="chart-reference-network">
       <h3>Reference Network Between Context Files</h3>
       <p class="chart-desc">Context files that only reference another file, by source and target category. Other covers files such as <code>README.md</code> and <code>CONTRIBUTING.md</code>.</p>
+      <div class="chart-container"></div>
+    </div>
+    <div class="chart-panel" id="chart-import-network">
+      <h3>Imports Between Files</h3>
+      <p class="chart-desc">Files that import another file, by the category of the importing file (rows) and of the file that the import reaches (columns). A cell counts each importing file once. Other context covers the other context files, such as <code>REVIEW.md</code>, Other artifact the configuration artifacts of the other mechanisms, such as rules, and Other file the files that are no configuration artifact, such as <code>README.md</code>. No file counts the imports that reach no file of the repository, such as a word after an <code>@</code> that names no file.</p>
       <div class="chart-container"></div>
     </div>
   </div>
@@ -292,16 +301,16 @@
   <p class="section-desc">Repositories in which at least one configuration artifact was detected.</p>
   <div class="filter-bar" id="repo-filter-bar" style="flex-direction:column;align-items:stretch;gap:0.5rem">
     <input type="text" id="repo-search" placeholder="Filter repositories..." style="min-width:0;width:100%">
-    <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap">
-      <select id="language-filter"><option value="">All languages</option></select>
-      <span style="width:1px;height:20px;background:#d6d3d1"></span>
-      <div class="platform-toggle" id="tool-toggles"></div>
-      <span style="width:1px;height:20px;background:#d6d3d1"></span>
-      <div class="platform-toggle" id="config-chips"></div>
-      <span style="width:1px;height:20px;background:#d6d3d1"></span>
-      <div class="platform-toggle" id="extension-chips"></div>
-      <select id="framework-filter"><option value="">All planning frameworks</option></select>
-    </div>
+    <div class="filter-groups"><div>
+      <div class="filter-group"><select id="language-filter"><option value="">All languages</option></select></div>
+      <div class="filter-group"><div class="platform-toggle" id="tool-toggles"></div></div>
+      <div class="filter-group"><div class="platform-toggle" id="context-file-chips"></div>
+        <select id="context-file-filter"><option value="">All context files</option></select></div>
+      <div class="filter-group"><div class="platform-toggle" id="config-chips"></div></div>
+      <div class="filter-group"><div class="platform-toggle" id="import-chips"></div></div>
+      <div class="filter-group"><div class="platform-toggle" id="planning-chips"></div>
+        <select id="framework-filter"><option value="">All planning frameworks</option></select></div>
+    </div></div>
   </div>
   <div id="repo-results-info" class="results-info" style="display:flex;justify-content:space-between;align-items:center">
     <span id="repo-results-text"></span>
@@ -334,8 +343,11 @@
   <div class="tab-bar" id="artifact-tabs"></div>
   <div class="filter-bar" id="artifact-filter-bar">
     <input type="text" id="artifact-search" placeholder="Filter by repository or path...">
-    <div class="platform-toggle" id="artifact-tool-toggles"></div>
-    <div id="artifact-selects" style="display:flex;gap:0.75rem;flex-wrap:wrap"></div>
+    <div class="filter-groups"><div>
+      <div class="platform-toggle filter-group" id="artifact-tool-toggles"></div>
+      <div class="platform-toggle filter-group" id="artifact-skill-toggles" style="display:none"></div>
+      <div class="filter-group" id="artifact-selects"></div>
+    </div></div>
   </div>
   <div id="artifact-results-info" class="results-info"></div>
   <div id="artifact-content"></div>
@@ -453,13 +465,19 @@ const CONFIG_KEYS = ['context_file','skills','subagents','commands','rules','set
 const MECHANISM_LABELS = {context_file:'Context Files',skills:'Skills',subagents:'Subagents',commands:'Commands',rules:'Rules',settings:'Settings',hooks:'Hooks',mcp:'MCP',plugins:'Plugins',lsp:'LSP'};
 // The two extensions beside the configuration artifacts, which the repository list filters by
 // as it filters by the mechanisms, and which the configuration browser shows in tabs of their own.
-const EXTENSION_KEYS = ['planning_documents','imports'];
+// The order of their badges, and the group of the repository list that holds the button of each.
+const EXTENSION_KEYS = ['imports','planning_documents'];
+const EXTENSION_GROUPS = {imports:'import-chips',planning_documents:'planning-chips'};
 const EXTENSION_LABELS = {planning_documents:'Planning documents',imports:'Imports'};
 const EXTENSION_TITLES = {planning_documents:'Repositories with a planning document, which is not a configuration artifact',
   imports:'Repositories with a configuration artifact that imports a file'};
 // The columns of each tab of the configuration browser that a select filters by, with the label
 // of the option that shows every row.
+// The optional directories of a skill (https://agentskills.io/specification), which the skills
+// tab filters by: a skill passes with one of the directories of the pressed buttons.
+const SKILL_DIRECTORIES = ['scripts', 'references', 'assets'];
 const ARTIFACT_SELECTS = {
+  context_files: [['category', 'All context files']],
   planning_documents: [['framework', 'All frameworks']],
   imports: [['target_status', 'All statuses']],
 };
@@ -499,6 +517,8 @@ let artifactSelections = {};
 // The tools of the pressed tool buttons of the configuration browser, which every tab with a tool
 // column applies and which a change of tab keeps.
 let artifactTools = [];
+// The optional directories of the pressed buttons of the skills tab.
+let artifactSkillDirectories = [];
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 function fmt(n) { return n == null ? '-' : n.toLocaleString(); }
@@ -640,28 +660,37 @@ function renderFilterBar() {
     toggles.appendChild(btn);
   });
 
+  // The Context Files button has a group of its own with the select of the categories, and the
+  // buttons of the other mechanisms share one. Both groups filter as one (`applyFilters`).
+  const contextFileChips = document.getElementById('context-file-chips');
   const chips = document.getElementById('config-chips');
   CONFIG_KEYS.forEach(c => {
     const btn = document.createElement('button');
     btn.textContent = MECHANISM_LABELS[c];
     btn.dataset.config = c;
     btn.onclick = () => { btn.classList.toggle('active'); applyFilters(); };
-    chips.appendChild(btn);
+    (c === 'context_file' ? contextFileChips : chips).appendChild(btn);
   });
 
-  const extensionChips = document.getElementById('extension-chips');
+  // Each extension has a group of its own, the planning documents with the select of their
+  // frameworks, and the two groups filter as one (`applyFilters`).
   EXTENSION_KEYS.forEach(k => {
     const btn = document.createElement('button');
     btn.textContent = EXTENSION_LABELS[k];
     btn.title = EXTENSION_TITLES[k];
     btn.dataset.extension = k;
     btn.onclick = () => { btn.classList.toggle('active'); applyFilters(); };
-    extensionChips.appendChild(btn);
+    document.getElementById(EXTENSION_GROUPS[k]).appendChild(btn);
   });
 
   const langs = [...new Set(INDEX.map(r => r.mainLanguage).filter(Boolean))].sort();
   const sel = document.getElementById('language-filter');
   langs.forEach(l => { const o = document.createElement('option'); o.value = l; o.textContent = l; sel.appendChild(o); });
+
+  // The categories of the context files, which only a repository with one lists.
+  const contextFileCategories = [...new Set(INDEX.flatMap(r => r.context_file_categories || []))].sort();
+  const contextFileSel = document.getElementById('context-file-filter');
+  contextFileCategories.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; contextFileSel.appendChild(o); });
 
   // The frameworks of the planning documents, which only a repository with one lists.
   const frameworks = [...new Set(INDEX.flatMap(r => r.planning_frameworks || []))].sort();
@@ -671,16 +700,20 @@ function renderFilterBar() {
   document.getElementById('repo-search').oninput = () => applyFilters();
   sel.onchange = () => applyFilters();
   frameworkSel.onchange = () => applyFilters();
+  contextFileSel.onchange = () => applyFilters();
   document.getElementById('sort-select').onchange = () => applyFilters();
 }
 
 function applyFilters() {
   const query = document.getElementById('repo-search').value.toLowerCase();
   const activeTools = [...document.querySelectorAll('#tool-toggles button.active')].map(b => b.dataset.tool);
-  const activeConfigs = [...document.querySelectorAll('#config-chips button.active')].map(c => c.dataset.config);
-  const activeExtensions = [...document.querySelectorAll('#extension-chips button.active')].map(c => c.dataset.extension);
+  const activeConfigs = [...document.querySelectorAll('#context-file-chips button.active'),
+                         ...document.querySelectorAll('#config-chips button.active')].map(c => c.dataset.config);
+  const activeExtensions = EXTENSION_KEYS.flatMap(k =>
+    [...document.querySelectorAll(`#${EXTENSION_GROUPS[k]} button.active`)]).map(c => c.dataset.extension);
   const lang = document.getElementById('language-filter').value;
   const framework = document.getElementById('framework-filter').value;
+  const contextFile = document.getElementById('context-file-filter').value;
   const sort = document.getElementById('sort-select').value;
 
   FILTERED = INDEX.filter(r => {
@@ -690,6 +723,7 @@ function applyFilters() {
     if (activeExtensions.length && !activeExtensions.some(k => r[k])) return false;
     if (lang && r.mainLanguage !== lang) return false;
     if (framework && !(r.planning_frameworks || []).includes(framework)) return false;
+    if (contextFile && !(r.context_file_categories || []).includes(contextFile)) return false;
     return true;
   });
 
@@ -1088,6 +1122,19 @@ function initArtifacts() {
     };
     toolToggles.appendChild(btn);
   });
+  const skillToggles = document.getElementById('artifact-skill-toggles');
+  SKILL_DIRECTORIES.forEach(d => {
+    const btn = document.createElement('button');
+    btn.textContent = `${d}/`;
+    btn.title = `Skills with a ${d}/ directory`;
+    btn.onclick = () => {
+      btn.classList.toggle('active');
+      artifactSkillDirectories = artifactSkillDirectories.includes(d)
+        ? artifactSkillDirectories.filter(x => x !== d) : [...artifactSkillDirectories, d];
+      applyArtifactFilters();
+    };
+    skillToggles.appendChild(btn);
+  });
   document.getElementById('artifact-search').oninput = e => {
     artifactQuery = e.target.value.trim().toLowerCase();
     applyArtifactFilters();
@@ -1127,6 +1174,7 @@ async function loadArtifact(key) {
   artifactPage = 0;
   renderArtifactSelects(key);
   document.getElementById('artifact-tool-toggles').style.display = hasToolColumn(key) ? '' : 'none';
+  document.getElementById('artifact-skill-toggles').style.display = key === 'skills' ? '' : 'none';
   renderArtifactPage(key);
 }
 
@@ -1162,10 +1210,13 @@ function filteredArtifacts(key) {
   const pathCol = getArtifactPathCol(key);
   const chosen = Object.entries(artifactSelections).filter(([, value]) => value);
   const tools = hasToolColumn(key) ? artifactTools : [];
+  const directories = key === 'skills' ? artifactSkillDirectories : [];
   return artifactData[key].filter(row =>
     (!artifactQuery || String(row.repo_name ?? '').toLowerCase().includes(artifactQuery)
       || String(row[pathCol] ?? '').toLowerCase().includes(artifactQuery))
     && (!tools.length || rowTools(row.tool).some(t => tools.includes(t)))
+    && (!directories.length
+        || String(row.directories ?? '').split(', ').some(d => directories.includes(d)))
     && chosen.every(([column, value]) => String(row[column] ?? '') === value));
 }
 
@@ -1230,7 +1281,9 @@ function getArtifactColumns(key) {
   if (pathCol) base.push({ key: pathCol, label: 'Path' });
   if (!['planning_documents', 'imports'].includes(key)) base.push({ key: 'tool', label: 'Tool' });
   if (['skills','subagents','commands','rules'].includes(key)) base.push({ key: 'name', label: 'Name' });
+  if (key === 'skills') base.push({ key: 'directories', label: 'Directories' });
   if (key === 'context_files') {
+    base.push({ key: 'category', label: 'Category' });
     base.push({ key: 'language', label: 'Language' });
     base.push({ key: 'line_count', label: 'Lines' });
   }
@@ -1282,8 +1335,8 @@ function copyCode(btn) {
 const chartRenderers = {
   'config-tool-heatmap': renderHeatmap,
   'language-tool-heatmap': renderHeatmap,
-  'tool-cooccurrence': renderCooccurrenceHeatmap,
   'reference-network': renderReferenceHeatmap,
+  'import-network': renderReferenceHeatmap,
   'upset': renderUpsetPlot,
   'count-distribution': renderCountDistribution,
   'creation-order': renderCreationOrder,
@@ -1293,8 +1346,8 @@ const chartRenderers = {
 const chartDataFiles = {
   'config-tool-heatmap': 'config_tool_heatmap',
   'language-tool-heatmap': 'language_tool_heatmap',
-  'tool-cooccurrence': 'tool_cooccurrence',
   'reference-network': 'reference_network',
+  'import-network': 'import_network',
   'upset': 'upset_tool_usage',
   'count-distribution': 'count_distribution',
   'creation-order': 'creation_order_sequences',
@@ -1381,61 +1434,6 @@ function renderHeatmap(container, data) {
     svg.append('text').attr('x', x).attr('y', margin.top - 8)
       .attr('text-anchor', 'middle').attr('font-size', '10px').attr('fill', '#78716c')
       .text(`(n=${total.toLocaleString()})`);
-  });
-}
-
-// ── Co-occurrence heatmap ───────────────────────────────────────────────────
-function renderCooccurrenceHeatmap(container, data) {
-  const maxLabelLen = d3.max(data.tools.map(t => t.length));
-  const leftMargin = Math.max(70, maxLabelLen * 8 + 12);
-  const margin = { top: 50, right: 10, bottom: 10, left: leftMargin };
-  const cellSize = 80;
-  const n = data.tools.length;
-  const width = margin.left + n * cellSize + margin.right;
-  const height = margin.top + n * cellSize + margin.bottom;
-
-  const svg = d3.select(container).append('svg')
-    .attr('viewBox', `0 0 ${width} ${height}`)
-;
-
-  const maxVal = d3.max(data.count_matrix.flat());
-  const color = d3.scaleSequential(d3.interpolateYlOrRd).domain([0, maxVal]);
-
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) {
-      const x = margin.left + j * cellSize;
-      const y = margin.top + i * cellSize;
-      const cnt = data.count_matrix[i][j];
-      const pct = data.pct_matrix[i][j];
-
-      svg.append('rect').attr('x', x).attr('y', y)
-        .attr('width', cellSize).attr('height', cellSize)
-        .attr('fill', color(cnt)).attr('stroke', '#fff').attr('stroke-width', 0.5);
-
-      const textColor = cnt > maxVal * 0.6 ? '#fff' : '#292524';
-      if (i === j) {
-        svg.append('text').attr('x', x + cellSize/2).attr('y', y + cellSize/2 + 4)
-          .attr('text-anchor', 'middle').attr('font-size', '10px').attr('fill', textColor)
-          .text(`n=${cnt.toLocaleString()}`);
-      } else {
-        svg.append('text').attr('x', x + cellSize/2).attr('y', y + cellSize/2 - 6)
-          .attr('text-anchor', 'middle').attr('font-size', '10px').attr('fill', textColor)
-          .text(cnt.toLocaleString());
-        svg.append('text').attr('x', x + cellSize/2).attr('y', y + cellSize/2 + 8)
-          .attr('text-anchor', 'middle').attr('font-size', '9px').attr('fill', textColor)
-          .text(`(${pct.toFixed(1)}%)`);
-      }
-    }
-  }
-
-  data.tools.forEach((t, i) => {
-    svg.append('text').attr('x', margin.left - 8).attr('y', margin.top + i * cellSize + cellSize/2)
-      .attr('text-anchor', 'end').attr('dominant-baseline', 'middle')
-      .attr('font-size', '12px').attr('fill', '#292524').text(t);
-    svg.append('text')
-      .attr('x', margin.left + i * cellSize + cellSize/2)
-      .attr('y', margin.top - 8)
-      .attr('text-anchor', 'middle').attr('font-size', '12px').attr('fill', '#292524').text(t);
   });
 }
 
